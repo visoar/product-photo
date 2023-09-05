@@ -1,0 +1,36 @@
+# Configuration for Cog ⚙️
+# Reference: https://github.com/replicate/cog/blob/main/docs/yaml.md
+
+build:
+  # set to true if your model requires a GPU
+  gpu: true
+  cuda: "11.8"
+
+  # a list of ubuntu apt packages to install
+  system_packages:
+    - "libgl1-mesa-glx"
+    - "libglib2.0-0"
+
+  # python version in the form '3.8' or '3.8.12'
+  python_version: "3.9"
+
+  # a list of packages in the format <package-name>==<version>
+  python_packages:
+    - "diffusers==0.18.2"
+    - "torch==2.0.1"
+    - "transformers==4.28.1"
+    - "carvekit_colab==4.1.0"
+    - "controlnet_aux==0.0.3"
+    - "realesrgan==0.3.0"
+    - "accelerate==0.18.0"
+    - "openai==0.27.4"
+    - "xformers==0.0.20"
+    - "compel==1.2.1"
+
+    # commands run after the environment is setup
+  run:
+    - "echo \"import torch\\nfrom basicsr.utils.download_util import load_file_from_url\\nfrom carvekit.ml.files.models_loc import tracer_b7_pretrained\\nfrom carvekit.web.schemas.config import MLConfig\\nfrom carvekit.web.utils.init_utils import init_interface\\nfrom controlnet_aux import HEDdetector\\nfrom diffusers import ControlNetModel, StableDiffusionInpaintPipeline\\nfrom transformers import pipeline\\n\\ntracer_b7_pretrained()\\n\\ndevice = 'cuda' if torch.cuda.is_available() else 'cpu'\\ninit_interface(\\n    MLConfig(segmentation_network='tracer_b7',\\n             preprocessing_method='none',\\n             postprocessing_method='fba',\\n             seg_mask_size=640,\\n             trimap_dilation=30,\\n             trimap_erosion=5,\\n             device=device)\\n)\\n\\nload_file_from_url(url='https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth',\\n                   model_dir='./', progress=True)\\n\\nHEDdetector.from_pretrained('lllyasviel/ControlNet')\\npipeline('depth-estimation')\\n\\nControlNetModel.from_pretrained('thibaud/controlnet-sd21-hed-diffusers', torch_dtype=torch.float16)\\n\\nControlNetModel.from_pretrained('thibaud/controlnet-sd21-depth-diffusers', torch_dtype=torch.float16)\\n\\npipe = StableDiffusionInpaintPipeline.from_pretrained(\\n    'stabilityai/stable-diffusion-2-inpainting', torch_dtype=torch.float16\\n)\\n\" > init2.py"
+    - "python init2.py"
+
+# predict.py defines how predictions are run on your model
+predict: "predict.py:Predictor"
