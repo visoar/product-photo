@@ -256,7 +256,7 @@ class Predictor(BasePredictor):
             height=inpaint_height,
             width=inpaint_width,
             guidance_scale=guidance_scale,
-            num_inference_steps=20,
+            num_inference_steps=num_inference_steps,
             num_images_per_prompt=image_num,
             control_image=[hed_control_image, depth_control_image],
             controlnet_conditioning_scale=[0.2, 0.7],
