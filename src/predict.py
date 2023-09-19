@@ -68,7 +68,7 @@ class Predictor(BasePredictor):
             product_size: str = Input(
                 description="Max product size",
                 choices=["Original", "0.6 * width", "0.5 * width", "0.4 * width", "0.3 * width", "0.2 * width"],
-                default='Original'
+                default='0.6 * width'
             ),
             prompt: str = Input(
                 description="Product name or prompt"
@@ -107,7 +107,7 @@ class Predictor(BasePredictor):
                 default=20
             ),
             manual_seed: int = Input(
-                description="Manual Seed",
+                description="Seed",
                 default=-1
             )
 
